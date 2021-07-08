@@ -1,0 +1,165 @@
+Configuraciones del Proyecto
+
+	Ejemplo tomado de codewithStein: https://www.youtube.com/watch?v=j5DKSvAB-Ww
+
+Instalar/configurar un entorno virtual
+Crear un proyecto con django llamado vuengo
+Instalar: 
+	pip install pylint
+	pip install django==3.0
+	pip install djangorestframework
+	pip install django-cors-headers
+
+
+	
+	Crear un archivo pip freeze > requeriments.txt
+
+CONFIGURAR Proyecto
+	django-admin startproject vuengo
+
+AGREGAR AL SETTINGS/INSTALLED_APPS
+	'rest_framework',
+	'corsheaders',
+
+AGREGAR AL SETTINGS: 
+	ALLOWED_HOSTS = ['127.0.0.1']
+	CORS_ORIGIN_ALLOW_ALL = True
+
+AGREGAR AL SETTINGS/MIDDLEWARE:
+	'django.middleware.security.SecurityMiddleware',
+	'django.contrib.sessions.middleware.SessionMiddleware',
+	'corsheaders.middleware.CorsMiddleware',
+
+
+REALIZAR MIGRACIONES:
+	python manage.py makemigrations
+	python manage.py migrate
+
+LEVANTAR SERVIDOR Y ABRIR EN NAVEGADOR
+	python manage.py runserver
+
+	127.0.0.1:8000
+
+CREAR SUPERUSUARIO:
+	python manage.py createsuperuser
+
+
+
+Instalar vue
+
+
+CREAR DIRECTORIO
+	mkdir Vue
+	cd Vue
+	vue create vuengo
+		SELECCIONAR:
+		babel, router, CSS Pre-processors
+			Yes
+		Sass/SCSS(with node-sass)
+		In package.json
+			N
+
+	cd vuengo
+	INSTALAR AXIOS:
+	npm install axios
+	npm install bulma
+
+	npm run serve
+
+#Juntar en vscode los proyectos de backend con frontend
+
+IMPORTAR BULMA EN Vue ABRIR archivo App.vue y añadir
+@import '../node_modules/bulma';
+
+
+</template>
+
+<style lang="scss">
+@import '../node_modules/bulma';
+#app {
+
+
+CREAR APPS EN django	
+	python manage.py startapp task
+
+EN models.py crear la clase
+	class Task(models.Model):
+		pass....
+
+ACTUALIZAMOS SETTINGS.py AGREGANDO LA APP task
+	'task',
+Efectuamos migraciones para crear el modelo task:
+	python manage.py makemigrations
+	python manage.py migrate
+
+
+CONFIGURAR LOS SERIALIZERS CREANDO EN task el archivo:
+	serializers.py
+		from rest_framework import serializers
+
+		from .models import Task
+
+		class TaskSerializer(serializers.HyperlinkedModel
+    		class Meta:
+        		model = Task
+        		fields = ('id', 'description', 'status')
+
+AGREGAR LAS VISTAS EN task
+
+from django.shortcuts import render
+
+from .models import Task
+from .serializers import TaskSerializ
+
+from rest_framework import viewsets
+from rest_framework.authentication im
+from rest_framework.permissions impor
+
+class TaskViewSet(viewsets.ModelViewS
+    authentication_classes = (BasicAu
+    permission_classes = (IsAuthentic
+    queryset = Task.objects.all()
+    serializer_class = TaskSerializer
+
+ABRIR EL SHELL Y AGREGAR DATOS:
+	python manage.py shell
+
+	from task.models import Task
+	task1 =Task.objects.create(description='Task number 1')
+	task2 =Task.objects.create(description='Task number 2')
+	task3 =Task.objects.create(description='Task number 3', status=Task.DONE)
+	tasks = Task.objects.all()
+
+y listamos tasks
+	tasks
+Cerramos Shell Ctl+z
+
+GENERAMOS LAS URLS EN EL MAIN
+
+from django.contrib import admin
+from django.urls import path, include
+
+from task.views import TaskViewSet
+
+from rest_framework import routers
+
+router = routers.DefaultRouter()
+router.register(r'tasks', TaskViewSet)
+
+urlpatterns = [
+    path('', include(router.urls)),
+    path('admin/', admin.site.urls),
+]
+
+
+ABRIMOS OTRA TERMINAL PARA PROBAR QUE SI EXISTE ACCESO A LOS DATOS CREADOS USANDO CURL
+
+	curl -H 'Accept: application/json; indent=4' -u Beto:Prueba1234 http://127.0.0.1:8000/tasks/
+
+
+ABRIMOS EN EL FRONT  la carpeta views y abrimos Home.vue
+
+
+
+
+
